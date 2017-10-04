@@ -1,0 +1,15 @@
+{
+  "name": "simple-api",
+  "version": "1.0.0",
+  "description": "Very simple API to write GET variables to a file",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "http": "0.0.0"
+  }
+}
