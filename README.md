@@ -1,6 +1,6 @@
 # Simple API
 
-Write the value of URL vars in an http request to STDOUT using a very simple node server. 
+Write the value of URL vars in an http request to STDOUT using a very simple node server.
 
 ### Running
 
@@ -17,22 +17,29 @@ will result in the contents of output.jsonl:
 
     {"id" : 123}
 
-The subsequent request: `http://localhost:4500/write&id=456` will result in the contents of output.jsonl: 
+The subsequent request: `http://localhost:4500/write&id=456` will result in the contents of output.jsonl:
 
     {"id" : 123}
     {"id" : 456}
 
-### Programatically:
+### sample.html
 
-    function logID(id){
-      var URL = "http://epic-analytics.cs.colorado.edu:4500/write?id="+id;
+    <script>
+
+    function logID(button){
+      var id = button.dataset.id
+      var detail = button.dataset.something
+      console.log("Clicked button for image: "+id)
+
+      var URL = "http://localhost:4500/write?id="+id+"&other="+detail;
 
       var xmlHttp = new XMLHttpRequest();
-      xmlHttp.open( "GET", URL, false );
+      xmlHttp.open( "GET", URL, true );
       xmlHttp.send( null );
-      return xmlHttp.responseText;
-    }
 
-    button.addEventListener('click',function(e){
-      logID(this.id) //Or whatever the ID is
+     return xmlHttp.responseText;
+
     }
+    </script>
+
+    <button class="button" data-id="123" data-something="fromtweet1" onClick="logID(this)">BUTTON 1</button>

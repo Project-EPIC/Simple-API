@@ -1,0 +1,33 @@
+<html>
+
+<head>
+<title>Test</title>
+</head>
+<body>
+
+<script>
+
+function logID(button){
+  var id = button.dataset.id
+  var detail = button.dataset.something
+  console.log("Clicked button for image: "+id)
+
+  var URL = "http://localhost:4500/write?id="+id+"&other="+detail;
+
+  var xmlHttp = new XMLHttpRequest();
+  xmlHttp.open( "GET", URL, true );
+  xmlHttp.send( null );
+
+ return xmlHttp.responseText;
+
+}
+</script>
+
+<button class="button" data-id="123" data-something="fromtweet1" onClick="logID(this)">BUTTON 1</button>
+
+<button class="button" data-id="456" data-something="fromtweet2" onClick="logID(this)">BUTTON 2</button>
+
+<button class="button" data-id="789" data-something="fromtweet3" onClick="logID(this)">BUTTON 3</button>
+
+</body>
+<html>
