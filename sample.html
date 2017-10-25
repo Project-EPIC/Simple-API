@@ -2,6 +2,13 @@
 
 <head>
 <title>Test</title>
+
+<!-- JQUERY -->
+<script
+  src="https://code.jquery.com/jquery-3.2.1.min.js"
+  integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+  crossorigin="anonymous"></script>
+
 </head>
 <body>
 
@@ -19,7 +26,6 @@ function logID(button){
   xmlHttp.send( null );
 
  return xmlHttp.responseText;
-
 }
 </script>
 
@@ -28,6 +34,38 @@ function logID(button){
 <button class="button" data-id="456" data-something="fromtweet2" onClick="logID(this)">BUTTON 2</button>
 
 <button class="button" data-id="789" data-something="fromtweet3" onClick="logID(this)">BUTTON 3</button>
+
+<br>
+
+<button class="sqlite-button" style="margin-top:50;" data-id="1234" data-something="tweet-for-whatever">SQLITE BUTTON</button>
+
+<script>
+//This is much better...
+$(".sqlite-button").click(function(){
+  var id     = this.dataset.id
+  var detail = this.dataset.something || ""
+
+  if (this.className == 'active'){
+
+  }else{
+
+  }
+
+  //This is where we can change the value based on whether or not it's been clicked
+
+  console.log("Clicked button for image: "+id)
+    $.post("http://localhost:4501/sqlite",
+    {
+        tweet: id,
+        value: val,
+        detail: detail
+    },
+    function(data, status){
+      console.warn(status)
+    });
+});
+
+</script>
 
 </body>
 <html>
