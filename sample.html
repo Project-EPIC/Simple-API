@@ -1,7 +1,9 @@
 <html>
-
 <head>
 <title>Test</title>
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
+
 
 <!-- JQUERY -->
 <script
@@ -9,8 +11,17 @@
   integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
   crossorigin="anonymous"></script>
 
+<style>
+  body{margin:10; padding:20;}
+  h2{margin:20px 0px;}
+</style>
+
 </head>
 <body>
+
+<h1>Use the code examples offered here to build your API</h1>
+
+<h4>Status Updates here: <span id="status">No updates</span></h4>
 
 <script>
 
@@ -29,40 +40,74 @@ function logID(button){
 }
 </script>
 
+<label>User:
+  <input id='username' type="textarea" value='Default'></input>
+</label>
+
+<h2>Write to stdout with GET request</h2>
+
 <button class="button" data-id="123" data-something="fromtweet1" onClick="logID(this)">BUTTON 1</button>
 
-<button class="button" data-id="456" data-something="fromtweet2" onClick="logID(this)">BUTTON 2</button>
+<h2>POST Request to sqlite</h2>
 
-<button class="button" data-id="789" data-something="fromtweet3" onClick="logID(this)">BUTTON 3</button>
+<button type="button" class="btn btn-light sqlite-button" data-val="0" data-id="1234" data-detail="tweet-for-whatever">SQLITE BUTTON</button>
 
-<br>
-
-<button class="sqlite-button" style="margin-top:50;" data-id="1234" data-something="tweet-for-whatever">SQLITE BUTTON</button>
+<button type="button" class="btn btn-light sqlite-button" data-val="0" data-id="5678" data-detail="tweet-for-whatever">SQLITE BUTTON 2</button>
 
 <script>
-//This is much better...
+
+/*
+  If your button is classed: "sqlite-button" and has data-val and data-id attributes, then just copy this function!
+*/
+
 $(".sqlite-button").click(function(){
   var id     = this.dataset.id
-  var detail = this.dataset.something || ""
-
-  if (this.className == 'active'){
-
-  }else{
-
-  }
-
-  //This is where we can change the value based on whether or not it's been clicked
+  var detail = this.dataset.detail || ""
 
   console.log("Clicked button for image: "+id)
+
+  var user   = $('#username').val() || "no-user-set"
+  var val = Number(this.dataset.val)
+  var that = this;
+
+  //If val is 0, save the tweet
+  if (val==0){
     $.post("http://localhost:4501/sqlite",
     {
         tweet: id,
         value: val,
-        detail: detail
+        user: user,
+        detail: detail,
     },
     function(data, status){
-      console.warn(status)
+      if (status=="success"){
+        //Set the data-val to 0
+        $(that).attr("data-val","1"); //setter
+        that.classList.add('btn-success')
+        that.classList.remove("btn-light")
+      }
+    }).fail(function(xhr, status, error) {
+      console.error(xhr, status, error)
+      alert("Yikes! Somthing is wrong, likley the server is not running or reachable (Are you connected to the CU network?).")
     });
+    //Else, tweet has been coded, so we remove the tweet and set it back to default
+  }else if (val==1){
+    $.post("http://localhost:4501/sqlite-remove",
+    {
+        tweet: id,
+    },
+    function(data, status){
+      if (status=="success"){
+        //Set the data-val to 0
+        $(that).attr("data-val","0"); //setter
+        that.classList.remove("btn-success")
+        that.classList.add("btn-light")
+      }
+    }).fail(function(xhr, status, error) {
+      console.error(xhr, status, error)
+      alert("Yikes! Somthing is wrong, likley the server is not running or reachable (are you connected to the CU network?).")
+    });
+  }
 });
 
 </script>

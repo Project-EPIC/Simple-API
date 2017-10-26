@@ -2,11 +2,14 @@
 
 var url = require('url');
 var sqlite3 = require('sqlite3').verbose();
-var db = new sqlite3.Database('file.sqlite3');
+
+var todayString = new Date().toDateString().replace(/ /g,"_")
+
+var db = new sqlite3.Database(todayString + '.sqlite3');
 var myParser = require("body-parser");
 
 db.serialize(function() {
-  db.run("CREATE TABLE IF NOT EXISTS tweets (tweet TEXT, value INTEGER, detail TEXT, timestamp TIMESTAMP)");
+  db.run("CREATE TABLE IF NOT EXISTS tweets (tweet TEXT, value INTEGER, detail TEXT, user TEXT, timestamp TIMESTAMP)");
   db.run("CREATE TABLE IF NOT EXISTS meta (key TEXT, value INTEGER)");
   db.run("INSERT INTO meta VALUES (?,?)","get_counter",0)
   db.run("INSERT INTO meta VALUES (?,?)","post_counter",0)
@@ -32,6 +35,7 @@ restapi.get('/sqlite', function(req, res){
   });
 });
 
+/*
 restapi.get('/sqlite-tweets', function(req, res){
   console.warn("Returning Tweet List")
 
@@ -40,11 +44,13 @@ restapi.get('/sqlite-tweets', function(req, res){
   })
 
   db.each("SELECT * FROM tweets LIMIT 10000", function(err, row) {
-    console.log(row);
+    tweets.push(row)
   });
+  res.send(JSON.stringify(tweets))
 });
+*/
 
-
+//Save a tweet ID
 restapi.post('/sqlite', function(req, res){
 
   db.run("UPDATE meta SET value = value + 1 WHERE key = 'post_counter'", function(err, row){
@@ -53,13 +59,15 @@ restapi.post('/sqlite', function(req, res){
 
   var payload = req.body;
 
+  console.log("WRITING TWEET TO DATABASE")
   console.log(payload)
 
-  db.run("INSERT INTO tweets (tweet, value, detail, timestamp) VALUES (?,?,?,?)",
+  db.run("INSERT INTO tweets (tweet, value, detail, user, timestamp) VALUES (?,?,?,?,?)",
     payload.tweet,
     payload.value,
     payload.detail,
-    new Date(),
+    payload.user,
+    Math.floor(new Date() / 1000),
     function(err, row){
       if (err){
         console.error(err);
@@ -67,6 +75,33 @@ restapi.post('/sqlite', function(req, res){
       }
       else {
         res.status(200);
+      }
+      res.end();
+    }
+  );
+});
+
+//Remove an existing tweet
+restapi.post('/sqlite-remove', function(req, res){
+
+  db.run("UPDATE meta SET value = value + 1 WHERE key = 'post_counter'", function(err, row){
+    if (err) throw err;
+  })
+
+  var payload = req.body;
+
+  console.log("REMOVING TWEET: ")
+  console.log(payload)
+
+  db.run("DELETE FROM tweets WHERE tweet == ?", payload.tweet,
+    function(err, row){
+      if (err){
+        console.error(err);
+        res.status(500);
+      }
+      else {
+        res.status(200);
+        res.send("Removed Tweet: "+payload.tweet)
       }
       res.end();
     });
