@@ -1,45 +1,55 @@
-# Simple API
+Simple API
+==========
 
-Write the value of URL vars in an http request to STDOUT using a very simple node server.
+This repository contains two node severs to run a basic API to enable basic logging and database updates from simple http requests.
 
-### Running
+The two servers are:
 
+1. server.js
+1. sqlite-server.js
+
+Code for interacting with the servers is included in `sample.html`
+
+## 1. Basic Logging Server
+The basic logging server just converts URL variables to JSON and writes them to `stdout`.
+
+To start it:
+
+    npm install
     node server.js > output.jsonl
 
-
-Then any request you issue to port `4500` is written to output.jsonl
-
-Therefore, going to:
+Then any request you issue to port `4500` is written to `output.jsonl`. For example, any GET request to (such as entering this in your browser):
 
     http://localhost:4500/write&id=123
 
-will result in the contents of output.jsonl:
+will write the following line to `output.jsonl`:
 
     {"id" : 123}
 
-The subsequent request: `http://localhost:4500/write&id=456` will result in the contents of output.jsonl:
+The subsequent request: `http://localhost:4500/write&id=456` will result in the contents of `output.jsonl`:
 
     {"id" : 123}
     {"id" : 456}
 
-### sample.html
+## 2. SQLite-Server
+For a tad more control, there is a `POST` operation sqlite-backed server that can be run as:
 
-    <script>
+    npm install
+    node sqlite-server.js > log
 
-    function logID(button){
-      var id = button.dataset.id
-      var detail = button.dataset.something
-      console.log("Clicked button for image: "+id)
+(Still recommend saving the log)
 
-      var URL = "http://localhost:4500/write?id="+id+"&other="+detail;
+This API has 4 endpoints:
 
-      var xmlHttp = new XMLHttpRequest();
-      xmlHttp.open( "GET", URL, true );
-      xmlHttp.send( null );
+1. `GET /sqlite`
+1. `GET /sqlite-status`
+1. `POST /sqlite`
+1. `POST /sqlite-remove`
 
-     return xmlHttp.responseText;
+Currently based on `tweet`, an object of `{tweet:<id>}` `POST`ed to `/sqlite-remove` will delete it from the database.
 
-    }
-    </script>
+Visiting `/sqlite` in the browser shows the last 25 tweets written to the database while `sqlite-status` gives an update of the number of `POST` requests.
 
-    <button class="button" data-id="123" data-something="fromtweet1" onClick="logID(this)">BUTTON 1</button>
+Each time the server runs, it looks for (or creates) a sqlite file with the days date. Therefore, restarting the server daily ensures that data is made available.
+
+If `POST` requests are successful, a success message is returned. `sample.html` uses this to change the button status.
