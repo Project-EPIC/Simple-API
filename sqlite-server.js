@@ -3,9 +3,10 @@
 var url = require('url');
 var sqlite3 = require('sqlite3').verbose();
 
-var todayString = new Date().toDateString().replace(/ /g,"_")
+var today = new Date()
+var todayString = today.getFullYear() + '-' + ('0' + (today.getMonth()+1)).slice(-2) + '-' + ('0' + today.getDate()).slice(-2);
 
-var db = new sqlite3.Database(todayString + '.sqlite3');
+var db = new sqlite3.Database('/home/mebi6705/Simple-API/daily_coded_tweet_db_files/' + todayString + '.sqlite3');
 var myParser = require("body-parser");
 
 db.serialize(function() {
