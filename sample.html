@@ -58,11 +58,11 @@ function logID(button){
   <button style="margin:10px;" type="button" class="btn btn-light sqlite-button" data-val="0" data-id="9" data-detail="tweet">Test SQLite</button>
   <button style="margin:10px;" type="button" class="btn btn-light sqlite-button" data-val="0" data-id="8" data-detail="tweet">Test SQLite</button>
   <button style="margin:10px;" type="button" class="btn btn-light sqlite-button" data-val="0" data-id="7" data-detail="tweet">Test SQLite</button>
-  <button style="margin:10px;" type="button" class="btn btn-light sqlite-button" data-val="0" data-id="6" data-detail="tweet">Test SQLite</button>
-  <button style="margin:10px;" type="button" class="btn btn-light sqlite-button" data-val="0" data-id="5" data-detail="tweet">Test SQLite</button>
+  <button style="margin:10px;" type="button" class="btn btn-light sqlite-button" data-val="0" data-id="6" data-detail="tweet">Test SQLite</button><br>
+  <button style="margin:10px;" type="button" class="btn btn-light sqlite-button" data-val="0" data-id="5" data-detail="bilbo">Tweet 5 - Bilbo</button>
+  <button style="margin:10px;" type="button" class="btn btn-light sqlite-button" data-val="0" data-id="5" data-detail="frodo">Tweet 5 - Frodo</button>
+  <button style="margin:10px;" type="button" class="btn btn-light sqlite-button" data-val="0" data-id="5" data-detail="sam">Tweet 5 - Sam</button>
 </div>
-
-]
 
 <script>
 
@@ -76,7 +76,7 @@ $(".sqlite-button").click(function(){
 
   console.log("Clicked button for image: "+id)
 
-  var user   = $('#username').val() || "no-user-set"
+  var user   = $('#username').val().toLowerCase() || "no-user-set"
   var val = Number(this.dataset.val)
   var that = this;
 
@@ -84,9 +84,9 @@ $(".sqlite-button").click(function(){
   if (val==0){
     $.post("http://localhost:4501/sqlite",
     {
-        tweet: id,
-        value: val,
-        user: user,
+        tweet:  id,
+        value:  val,
+        user:   user,
         detail: detail,
     },
     function(data, status){
@@ -104,7 +104,9 @@ $(".sqlite-button").click(function(){
   }else if (val==1){
     $.post("http://localhost:4501/sqlite-remove",
     {
-        tweet: id,
+        tweet:  id,
+        user:   user,
+        detail: detail
     },
     function(data, status){
       if (status=="success"){

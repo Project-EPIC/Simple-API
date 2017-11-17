@@ -6,7 +6,16 @@ var sqlite3 = require('sqlite3').verbose();
 var today = new Date()
 var todayString = today.getFullYear() + '-' + ('0' + (today.getMonth()+1)).slice(-2) + '-' + ('0' + today.getDate()).slice(-2);
 
-var db = new sqlite3.Database('/home/mebi6705/Simple-API/daily_coded_tweet_db_files/' + todayString + '.sqlite3');
+var OVER_RIDE_NAME = '2017-11-07'
+
+var MELISSA_STATIC_DB = '/home/mebi6705/Simple-API/daily_coded_tweet_db_files/' + OVER_RIDE_NAME + '.sqlite3'
+
+//var db = new sqlite3.Database(MELISSA_STATIC_DB);
+
+var TESTING_DB = "2017-11-16.sqlite3"
+
+var db = new sqlite3.Database(TESTING_DB)
+
 var myParser = require("body-parser");
 
 db.serialize(function() {
@@ -61,7 +70,7 @@ restapi.post('/sqlite', function(req, res){
 
   var payload = req.body;
 
-  console.log("WRITING TWEET TO DATABASE: " + payload.tweet)
+  console.log("WRITING TWEET TO DATABASE: " + payload.tweet + " BY: " + payload.user)
 
   db.run("INSERT INTO tweets (tweet, value, detail, user, timestamp) VALUES (?,?,?,?,CURRENT_TIMESTAMP)",
     payload.tweet,
@@ -90,9 +99,9 @@ restapi.post('/sqlite-remove', function(req, res){
 
   var payload = req.body;
 
-  console.log("REMOVING TWEET: "+payload.tweet)
+  console.log("REMOVING TWEET: "+payload.tweet +" by USER: "+payload.user + " DETAIL: "+payload.detail)
 
-  db.run("DELETE FROM tweets WHERE tweet == ?", payload.tweet,
+  db.run("DELETE FROM tweets WHERE tweet == ? AND user == ? AND detail == ?", payload.tweet, payload.user, payload.detail,
     function(err, row){
       if (err){
         console.error(err);
