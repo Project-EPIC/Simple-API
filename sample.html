@@ -69,100 +69,33 @@ function logID(button){
   <button style="margin:10px;" type="button" class="btn btn-light sqlite-button sqlite-button-with-status" data-val="0" data-id="5" data-detail="bilbo">Tweet 5 - Bilbo</button>
   <button style="margin:10px;" type="button" class="btn btn-light sqlite-button sqlite-button-with-status" data-val="0" data-id="5" data-detail="frodo">Tweet 5 - Frodo</button>
   <button style="margin:10px;" type="button" class="btn btn-light sqlite-button sqlite-button-with-status" data-val="0" data-id="5" data-detail="sam">Tweet 5 - Sam</button>
+
+  <button style="margin:10px;" type="button" class="btn btn-light sqlite-button sqlite-button-with-status" data-val="0" data-id="6" data-detail="alice">Tweet 6 - Alice</button>
+  <button style="margin:10px;" type="button" class="btn btn-light sqlite-button sqlite-button-with-status" data-val="0" data-id="6" data-detail="bob">Tweet 6 - Bob</button>
+  <button style="margin:10px;" type="button" class="btn btn-light sqlite-button sqlite-button-with-status" data-val="0" data-id="6" data-detail="charlie">Tweet 6 - Charlie</button>
 </div>
 
-<script>
+<div style="max-width:500px; margin-top:50px;">
+  <h1>Dropdown Test</h1>
+  Tweet 5
+  <select style="margin:10px;" class="sqlite-dropdown-with-status" data-val="0" data-id="5">
+    <option selected="selected">Not Set</option>
+    <option value="bilbo">Bilbo</option>
+    <option value="frodo">Frodo</option>
+    <option value="sam">Sam</option>
+  </select>
 
-/*
-  If your button is classed: "sqlite-button" and has data-val and data-id attributes, then just copy this function!
-*/
+  Tweet 6
+  <select style="margin:10px;" class="sqlite-dropdown-with-status" data-val="0" data-id="6">
+    <option selected="selected">Not Set</option>
+    <option value="alice">Alice</option>
+    <option value="bob">Bob</option>
+    <option value="charlie">Charlie</option>
+  </select>
 
-$(".sqlite-button").click(function(){
-  var id     = this.dataset.id
-  var detail = this.dataset.detail || ""
+</div>
 
-  console.log("Clicked button for image: "+id)
-
-  var user   = $('#username').val().toLowerCase() || "no-user-set"
-  var val = Number(this.dataset.val)
-  var that = this;
-
-  //If val is 0, save the tweet
-  if (val==0){
-    $.post("http://localhost:4501/sqlite",
-    {
-        tweet:  id,
-        value:  val,
-        user:   user,
-        detail: detail,
-    },
-    function(data, status){
-      if (status=="success"){
-        //Set the data-val to 0
-        $(that).attr("data-val","1"); //setter
-        that.classList.add('btn-success')
-        that.classList.remove("btn-light")
-      }
-    }).fail(function(xhr, status, error) {
-      console.error(xhr, status, error)
-      alert("Yikes! Somthing is wrong, likley the server is not running or reachable (Are you connected to the CU network?).")
-    });
-    //Else, tweet has been coded, so we remove the tweet and set it back to default
-  }else if (val==1){
-    $.post("http://localhost:4501/sqlite-remove",
-    {
-        tweet:  id,
-        user:   user,
-        detail: detail
-    },
-    function(data, status){
-      if (status=="success"){
-        //Set the data-val to 0
-        $(that).attr("data-val","0"); //setter
-        that.classList.remove("btn-success")
-        that.classList.add("btn-light")
-      }
-    }).fail(function(xhr, status, error) {
-      console.error(xhr, status, error)
-      alert("Yikes! Somthing is wrong, likley the server is not running or reachable (are you connected to the CU network?).")
-    });
-  }
-});
-
-//When the page loads, lookup the status of each button and set as 1 or 0
-$(document).ready(function(){
-  console.log("Page is loaded")
-
-  $(".sqlite-button-with-status").each(function(){
-    console.log(this)
-    var that = this;
-
-    var id     = this.dataset.id
-
-    $.post("http://localhost:4501/coded-tweet",
-    {
-        tweet:  id,
-    },
-    function(data, status){
-      if (status=="success"){
-        if(data){
-          console.log("Found tweet")
-          console.log(data)
-          if (data.detail==that.dataset.detail){
-            $(that).attr("data-val","1"); //setter
-            that.classList.remove('btn-light')
-            that.classList.add('btn-success')
-          }
-        }
-      }
-    }).fail(function(xhr, status, error) {
-      console.error(xhr, status, error)
-      console.log("tweet not found: WITH ERROR")
-    });
-  })
-})
-
-</script>
+<script src="simple-api-front-end.js"></script>
 
 </body>
 <html>
