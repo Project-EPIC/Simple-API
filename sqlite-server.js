@@ -115,4 +115,25 @@ restapi.post('/sqlite-remove', function(req, res){
     });
 });
 
+restapi.post('/coded-tweet', function(req, res){
+
+  var payload = req.body;
+  var queryString = `SELECT detail FROM tweets WHERE tweet = "${payload.tweet}";`
+
+  db.get(queryString,
+    function(err, row){
+      console.log(row)
+      if (err){
+        console.error(err);
+        res.status(500);
+      }
+      else {
+        res.status(200);
+        res.send(row)
+      }
+      res.end();
+    }
+  );
+});
+
 restapi.listen(4501);

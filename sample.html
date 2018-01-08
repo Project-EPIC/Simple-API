@@ -64,6 +64,13 @@ function logID(button){
   <button style="margin:10px;" type="button" class="btn btn-light sqlite-button" data-val="0" data-id="5" data-detail="sam">Tweet 5 - Sam</button>
 </div>
 
+<div style="max-width:500px; margin-top:50px;">
+  <h1>Testing Status Retriever</h1>
+  <button style="margin:10px;" type="button" class="btn btn-light sqlite-button sqlite-button-with-status" data-val="0" data-id="5" data-detail="bilbo">Tweet 5 - Bilbo</button>
+  <button style="margin:10px;" type="button" class="btn btn-light sqlite-button sqlite-button-with-status" data-val="0" data-id="5" data-detail="frodo">Tweet 5 - Frodo</button>
+  <button style="margin:10px;" type="button" class="btn btn-light sqlite-button sqlite-button-with-status" data-val="0" data-id="5" data-detail="sam">Tweet 5 - Sam</button>
+</div>
+
 <script>
 
 /*
@@ -121,6 +128,39 @@ $(".sqlite-button").click(function(){
     });
   }
 });
+
+//When the page loads, lookup the status of each button and set as 1 or 0
+$(document).ready(function(){
+  console.log("Page is loaded")
+
+  $(".sqlite-button-with-status").each(function(){
+    console.log(this)
+    var that = this;
+
+    var id     = this.dataset.id
+
+    $.post("http://localhost:4501/coded-tweet",
+    {
+        tweet:  id,
+    },
+    function(data, status){
+      if (status=="success"){
+        if(data){
+          console.log("Found tweet")
+          console.log(data)
+          if (data.detail==that.dataset.detail){
+            $(that).attr("data-val","1"); //setter
+            that.classList.remove('btn-light')
+            that.classList.add('btn-success')
+          }
+        }
+      }
+    }).fail(function(xhr, status, error) {
+      console.error(xhr, status, error)
+      console.log("tweet not found: WITH ERROR")
+    });
+  })
+})
 
 </script>
 
