@@ -118,4 +118,50 @@ restapi.post('/sqlite-remove', function(req, res){
     });
 });
 
+//Remove an existing tweet
+//Another hacky, hacky, hacky, hacky, should be a diff. verb
+restapi.post('/sqlite-update', function(req, res){
+
+  db.run("UPDATE meta SET value = value + 1 WHERE key = 'postDel'", function(err, row){
+    if (err) throw err;
+  })
+
+  var payload = req.body;
+
+  console.log("UPDATING TWEET: "+payload.tweet +" by USER: "+payload.user + " DETAIL: "+payload.detail)
+
+  db.run("UPDATE tweets SET detail == ? WHERE tweet == ? AND user == ? ", payload.detail, payload.tweet, payload.user,
+    function(err, row){
+      if (err){
+        console.error(err);
+        res.status(500);
+      }
+      else {
+        res.status(200);
+        res.send("Updated Tweet: "+payload.tweet)
+      }
+      res.end();
+    });
+});
+
+restapi.post('/coded-tweet', function(req, res){
+
+  var payload = req.body;
+  var queryString = `SELECT detail FROM tweets WHERE tweet = "${payload.tweet}";`
+
+  db.get(queryString,
+    function(err, row){
+      if (err){
+        console.error(err);
+        res.status(500);
+      }
+      else {
+        res.status(200);
+        res.send(row)
+      }
+      res.end();
+    }
+  );
+});
+
 restapi.listen(4501);
