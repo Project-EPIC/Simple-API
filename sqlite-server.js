@@ -7,7 +7,7 @@ var today = new Date()
 var todayString = today.getFullYear() + '-' + ('0' + (today.getMonth()+1)).slice(-2) + '-' + ('0' + today.getDate()).slice(-2);
 
 // var OVER_RIDE_NAME = '2017-11-07'
-var OVER_RIDE_NAME = '2018-02-11_new'
+var OVER_RIDE_NAME = '2018-02-16_test'
 
 var MELISSA_STATIC_DB = '/home/mebi6705/Simple-API/daily_coded_tweet_db_files/' + OVER_RIDE_NAME + '.sqlite3'
 
@@ -71,7 +71,7 @@ restapi.post('/sqlite', function(req, res){
 
   var payload = req.body;
 
-  console.log("WRITING TWEET TO DATABASE: " + payload.tweet + " BY: " + payload.user)
+  console.log("WRITING TWEET TO DATABASE: "+payload.tweet +" by USER: "+payload.user + " DETAIL: "+payload.detail)
 
 //  db.run("INSERT INTO tweets (tweet, value, detail, user, timestamp) VALUES (?,?,?,?,CURRENT_TIMESTAMP)",
     
